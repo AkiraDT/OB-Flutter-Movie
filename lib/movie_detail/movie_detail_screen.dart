@@ -16,18 +16,8 @@ class MovieDetailScreen extends ConsumerWidget {
   Widget build(BuildContext context, ScopedReader watch) {
     final Movie data = ModalRoute.of(context)!.settings.arguments as Movie;
     final movieDetail = watch(movieDetailViewModelProvider);
-    final movieVideos = watch(movieVideosViewModelProvider);
+    final movieVideo = watch(movieVideosViewModelProvider);
     final movieCast = watch(movieCastViewModelProvider);
-
-    YoutubePlayerController _controller = YoutubePlayerController(
-      initialVideoId: movieVideos is Loading || movieVideos is Initial
-          ? ''
-          : movieVideos.data.elementAt(0).url,
-      flags: YoutubePlayerFlags(
-        autoPlay: true,
-        mute: true,
-      ),
-    );
 
     return Scaffold(
         backgroundColor: Color(0XFF191926),
@@ -72,6 +62,18 @@ class MovieDetailScreen extends ConsumerWidget {
                           ),
                         ),
                       ),
+                      Positioned.fill(
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              stops: [0.6, 0.95],
+                            ),
+                          ),
+                        ),
+                      ),
                       Positioned(
                           width: MediaQuery.of(context).size.width,
                           // height: 50,
@@ -101,7 +103,9 @@ class MovieDetailScreen extends ConsumerWidget {
                                         margin: EdgeInsets.only(bottom: 2),
                                         height: 20,
                                         child: AutoSizeText(
-                                          movieDetail.data.elementAt(0).genres.elementAt(0).name,
+                                          movieDetail is Loading || movieDetail is Initial ? '' : movieDetail.data.genres
+                                              .elementAt(0)
+                                              .name,
                                           style: TextStyle(
                                               color: Color(0xffDEDDDF)),
                                         ),
@@ -195,13 +199,14 @@ class MovieDetailScreen extends ConsumerWidget {
                                   ),
                                 ),
                                 Container(
-                                  width: 110,
-                                  height: 150,
-                                  child: Image(
-                                    image: NetworkImage(data.poster),
-                                    fit: BoxFit.fitHeight,
-                                  ),
-                                )
+                                    width: 110,
+                                    height: 150,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        image: DecorationImage(
+                                          image: NetworkImage(data.poster),
+                                          fit: BoxFit.cover,
+                                        ))),
                               ],
                             ),
                           ))
@@ -225,7 +230,7 @@ class MovieDetailScreen extends ConsumerWidget {
                               alignment: Alignment.center,
                               child: CircularProgressIndicator())
                           : AutoSizeText(
-                              movieDetail.data.elementAt(0).overview,
+                              movieDetail.data.overview,
                               maxLines: 3,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(height: 2),
@@ -247,9 +252,18 @@ class MovieDetailScreen extends ConsumerWidget {
                       ),
                       Container(
                         width: MediaQuery.of(context).size.width,
-                        height: 180,
+                        // height: 180,
                         child: YoutubePlayer(
-                          controller: _controller,
+                          controller: YoutubePlayerController(
+                              initialVideoId:
+                                  movieVideo is Loading || movieVideo is Initial
+                                      ? ''
+                                      : movieVideo.data.url,
+                              flags: YoutubePlayerFlags(
+                                autoPlay: false,
+                                mute: false,
+                                controlsVisibleAtStart: true,
+                              )),
                           showVideoProgressIndicator: true,
                           progressIndicatorColor: Colors.red,
                           progressColors: ProgressBarColors(
@@ -294,21 +308,30 @@ class MovieDetailScreen extends ConsumerWidget {
                                           height: 100,
                                           width: 100,
                                           decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(10),
+                                            borderRadius:
+                                                BorderRadius.circular(6),
+                                            image: DecorationImage(
+                                              image: NetworkImage(
+                                                movieCast.data
+                                                    .elementAt(index)
+                                                    .picture,
+                                              ),
+                                              fit: BoxFit.cover,
+                                              alignment: Alignment.topCenter
+                                            )
                                           ),
-                                          margin: EdgeInsets.only(right: 10, bottom: 2),
-                                          child: Image.network(
-                                              movieCast.data.elementAt(index).picture,
-                                            fit: BoxFit.cover,
-                                            alignment: Alignment.topLeft,
-                                          ),
+                                          margin: EdgeInsets.only(
+                                              right: 10, bottom: 2),
                                         ),
                                         Container(
                                           width: 100,
                                           child: AutoSizeText(
-                                              movieCast.data.elementAt(index).name,
-                                              maxLines: 2,
-                                              style: TextStyle(fontWeight: FontWeight.bold),
+                                            movieCast.data
+                                                .elementAt(index)
+                                                .name,
+                                            maxLines: 2,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
                                           ),
                                         )
                                       ],

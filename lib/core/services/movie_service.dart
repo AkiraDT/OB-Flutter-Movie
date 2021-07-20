@@ -63,8 +63,8 @@ class MovieService {
     return movies;
   }
 
-  Future<List<MovieDetail>> getMovieDetail(String movieId) async {
-    List<MovieDetail> movies = [];
+  Future<MovieDetail> getMovieDetail(String movieId) async {
+    MovieDetail movie = new MovieDetail(0, '', [], '');
     var response = await _dio
         .get('${API_URL}movie/${movieId}?api_key=${API_KEY}&language=en-US');
 
@@ -74,40 +74,37 @@ class MovieService {
         Genre genre = new Genre(gen['id'], gen['name']);
         genres.add(genre);
       }
-      MovieDetail newMovie = new MovieDetail(
+      movie = new MovieDetail(
         response.data['id'],
         response.data['title'],
         genres,
         response.data['overview'],
       );
-      movies.add(newMovie);
     }
 
-    return movies;
+    return movie;
   }
 
 
-  Future<List<MovieVideo>> getMovieVideo(String movieId) async {
-    List<MovieVideo> movies = [];
+  Future<MovieVideo> getMovieVideo(String movieId) async {
+    MovieVideo movie = new MovieVideo('', '', '', '', '');
     var response = await _dio
         .get('${API_URL}movie/${movieId}/videos?api_key=${API_KEY}&language=en-US');
 
     if (response.data.length > 0) {
       if (response.data['results'].length > 0) {
-        for (var video in response.data['results']) {
-          MovieVideo newMovie = new MovieVideo(
-            video['id'],
-            video['name'],
-            video['key'],
-            video['site'],
-            video['size'].toString(),
-          );
-          movies.add(newMovie);
-        }
+        var video = response.data['results'].elementAt(0);
+        movie = new MovieVideo(
+          video['id'],
+          video['name'],
+          video['key'],
+          video['site'],
+          video['size'].toString(),
+        );
       }
     }
 
-    return movies;
+    return movie;
   }
 
   Future<List<MovieCast>> getMovieCast(String movieId) async {
