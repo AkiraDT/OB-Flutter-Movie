@@ -2,6 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:moviedb/core/common/constants.dart';
 import 'package:moviedb/core/models/movie.dart';
+import 'package:moviedb/core/models/movie_cast.dart';
+import 'package:moviedb/core/models/movie_detail.dart';
+import 'package:moviedb/core/models/movie_video.dart';
 import 'package:moviedb/core/providers/dio_provider.dart';
 
 final movieServiceProvider =
@@ -58,5 +61,78 @@ class MovieService {
     }
 
     return movies;
+  }
+
+  Future<List<MovieDetail>> getMovieDetail(String movieId) async {
+    List<MovieDetail> movies = [];
+    var response = await _dio
+        .get('${API_URL}movie/${movieId}?api_key=${API_KEY}&language=en-US');
+
+    if (response.data.length > 0) {
+      List<Genre> genres = [];
+      for (var gen in response.data['genres']) {
+        Genre genre = new Genre(gen['id'], gen['name']);
+        genres.add(genre);
+      }
+      MovieDetail newMovie = new MovieDetail(
+        response.data['id'],
+        response.data['title'],
+        genres,
+        response.data['overview'],
+      );
+      movies.add(newMovie);
+    }
+
+    return movies;
+  }
+
+
+  Future<List<MovieVideo>> getMovieVideo(String movieId) async {
+    List<MovieVideo> movies = [];
+    var response = await _dio
+        .get('${API_URL}movie/${movieId}/videos?api_key=${API_KEY}&language=en-US');
+
+    if (response.data.length > 0) {
+      if (response.data['results'].length > 0) {
+        for (var video in response.data['results']) {
+          MovieVideo newMovie = new MovieVideo(
+            video['id'],
+            video['name'],
+            video['key'],
+            video['site'],
+            video['size'].toString(),
+          );
+          movies.add(newMovie);
+        }
+      }
+    }
+
+    return movies;
+  }
+
+  Future<List<MovieCast>> getMovieCast(String movieId) async {
+    List<MovieCast> movieCast = [];
+    var response = await _dio
+        .get('${API_URL}movie/${movieId}/credits?api_key=${API_KEY}&language=en-US');
+
+    if (response.data.length > 0) {
+      if (response.data['cast'].length > 0) {
+        for (var castDat in response.data['cast']) {
+          MovieCast cast = new MovieCast(
+            castDat['id'],
+            castDat['gender'],
+            castDat['known_for_department'],
+            castDat['name'],
+            castDat['original_name'],
+            castDat['popularity'],
+            'https://www.themoviedb.org/t/p/w300${castDat['profile_path']}',
+            castDat['character'],
+          );
+          movieCast.add(cast);
+        }
+      }
+    }
+
+    return movieCast;
   }
 }

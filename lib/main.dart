@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:moviedb/main_tab/main_tab_screen.dart';
+import 'package:moviedb/movie_detail/movie_detail_screen.dart';
 
 void main() {
   runApp(ProviderScope(child: MyApp()));
@@ -22,6 +23,9 @@ class MyApp extends StatelessWidget {
             bodyText2: TextStyle(color: Colors.white),
           )),
       home: MainTabScreen(),
+      routes: {
+        '/movieDetail': (context) => MovieDetailScreen(),
+      },
     );
   }
 }
