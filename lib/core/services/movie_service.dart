@@ -93,15 +93,21 @@ class MovieService {
 
     if (response.data.length > 0) {
       if (response.data['results'].length > 0) {
-        var video = response.data['results'].elementAt(0);
-        movie = new MovieVideo(
-          video['id'],
-          video['name'],
-          video['key'],
-          video['site'],
-          video['size'].toString(),
-        );
+        for(var video in response.data['results']){
+          if (video['site'] == 'YouTube') {
+            movie = new MovieVideo(
+              video['id'],
+              video['name'],
+              video['key'],
+              video['site'],
+              video['size'].toString(),
+            );
+            break;
+          }
+        }
       }
+    } else {
+      throw Exception();
     }
 
     return movie;

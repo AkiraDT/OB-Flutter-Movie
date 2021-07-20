@@ -4,7 +4,7 @@ import 'package:moviedb/core/models/movie_detail.dart';
 import 'package:moviedb/core/services/movie_service.dart';
 
 final movieDetailViewModelProvider =
-StateNotifierProvider((ref) => MovieDetailViewModel(ref.read(movieServiceProvider)));
+StateNotifierProvider<MovieDetailViewModel, AsyncState<MovieDetail>>((ref) => MovieDetailViewModel(ref.read(movieServiceProvider)));
 
 class MovieDetailViewModel extends StateNotifier<AsyncState<MovieDetail>> {
   final MovieService _movieService;

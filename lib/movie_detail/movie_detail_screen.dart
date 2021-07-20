@@ -103,9 +103,7 @@ class MovieDetailScreen extends ConsumerWidget {
                                         margin: EdgeInsets.only(bottom: 2),
                                         height: 20,
                                         child: AutoSizeText(
-                                          movieDetail is Loading || movieDetail is Initial ? '' : movieDetail.data.genres
-                                              .elementAt(0)
-                                              .name,
+                                          movieDetail is Loading || movieDetail is Initial ? '' : movieDetail.data.genres.elementAt(0).name,
                                           style: TextStyle(
                                               color: Color(0xffDEDDDF)),
                                         ),
