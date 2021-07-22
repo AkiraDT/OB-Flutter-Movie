@@ -4,12 +4,12 @@ import 'package:moviedb/core/models/movie_video.dart';
 import 'package:moviedb/core/services/movie_service.dart';
 
 final movieVideosViewModelProvider =
-StateNotifierProvider<MovieVideosViewModel, AsyncState<MovieVideo>>(
+StateNotifierProvider(
         (ref) => MovieVideosViewModel(ref.read(movieServiceProvider)));
 
-class MovieVideosViewModel extends StateNotifier<AsyncState<MovieVideo>> {
+class MovieVideosViewModel extends StateNotifier {
   final MovieService _movieService;
-  MovieVideosViewModel(this._movieService) : super(Initial(new MovieVideo('', '', '', '', '')));
+  MovieVideosViewModel(this._movieService) : super(Initial({}));
 
   loadData(String movieId) async {
     state = Loading(state.data);

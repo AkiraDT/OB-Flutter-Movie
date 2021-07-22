@@ -1,19 +1,25 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:moviedb/core/common/constants.dart';
 import 'package:moviedb/core/models/movie.dart';
 import 'package:moviedb/core/models/movie_cast.dart';
 import 'package:moviedb/core/models/movie_detail.dart';
+import 'package:moviedb/core/models/movie_favourite.dart';
 import 'package:moviedb/core/models/movie_video.dart';
 import 'package:moviedb/core/providers/dio_provider.dart';
+import 'package:moviedb/core/providers/storage_provider.dart';
 
 final movieServiceProvider =
-    Provider((ref) => MovieService(ref.read(dioProvider)));
+    Provider((ref) => MovieService(ref.read(dioProvider), ref.read(storageProvider)));
 
 class MovieService {
   final Dio _dio;
+  final FlutterSecureStorage _secureStorage;
 
-  MovieService(this._dio);
+  MovieService(this._dio, this._secureStorage);
 
   Future<List<Movie>> getPopularMovie(int page) async {
     List<Movie> movies = [];
@@ -64,7 +70,7 @@ class MovieService {
   }
 
   Future<MovieDetail> getMovieDetail(String movieId) async {
-    MovieDetail movie = new MovieDetail(0, '', [], '');
+    MovieDetail movie = new MovieDetail(0, '', [], '', 0, 0, false);
     var response = await _dio
         .get('${API_URL}movie/${movieId}?api_key=${API_KEY}&language=en-US');
 
@@ -79,6 +85,9 @@ class MovieService {
         response.data['title'],
         genres,
         response.data['overview'],
+        response.data['vote_average'],
+        response.data['vote_count'],
+        false,
       );
     }
 
@@ -137,5 +146,57 @@ class MovieService {
     }
 
     return movieCast;
+  }
+
+  Future<List<MovieFavourite>> getFavoriteMovie() async {
+    List<MovieFavourite> favoriteMovies = [];
+    var favoriteList = await _secureStorage.read(key: FAVOURITE_STORAGE_KEY);
+
+    if (favoriteList != null) {
+      List<int> favoriteMovieIds = List.from(jsonDecode(favoriteList.toString()));
+
+      for (var id in favoriteMovieIds) {
+        var resRelease = await _dio.get('${API_URL}movie/$id/release_dates?api_key=$API_KEY');
+        var resDetail = await _dio.get('${API_URL}movie/$id?api_key=$API_KEY&language=en-US');
+
+        String ageRating = '';
+        if (resDetail.data.length > 0) {
+
+          if (resRelease.data.length > 0) {
+            if (resRelease.data['results'].length > 0) {
+              List results = resRelease.data['results'];
+              var releaseData = results.firstWhere((element) => element['iso_3166_1'] == 'US', orElse: () {return null;});
+              if (releaseData != null) {
+                ageRating = releaseData['release_dates'][0]['certification'];
+              }
+            }
+          }
+
+          List<String> gens = [];
+          for (var gen in resDetail.data['genres']) {
+            gens.add(gen['name']);
+          }
+          var genresString = gens.join(', ');
+
+          MovieFavourite favoritedMovie = new MovieFavourite(
+              resDetail.data['id'],
+              resDetail.data['title'],
+              double.parse(resDetail.data['vote_average'].toString()),
+              'https://www.themoviedb.org/t/p/w300${resDetail.data['poster_path']}',
+              'https://www.themoviedb.org/t/p/w780${resDetail.data['backdrop_path']}',
+              genresString,
+              ageRating,
+              resDetail.data['vote_count'],
+              resDetail.data['runtime'],
+              resDetail.data['overview']
+          );
+          favoriteMovies.add(favoritedMovie);
+        } else {
+          throw Exception('Data Not Found!');
+        }
+      }
+    }
+
+    return favoriteMovies;
   }
 }

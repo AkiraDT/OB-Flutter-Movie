@@ -14,39 +14,38 @@ class VideoPlayer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
       context.read(movieVideosViewModelProvider.notifier).loadData(id.toString());
     });
 
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      // height: 180,
-      child: Consumer(
+    return Consumer(
         builder: ((context, watch, widget){
           final movieVideo = watch(movieVideosViewModelProvider);
 
-          return YoutubePlayer(
+          return movieVideo is Success ? YoutubePlayer(
             controller: YoutubePlayerController(
-                initialVideoId:
-                movieVideo is Success? movieVideo.data.url : '',
-                flags: YoutubePlayerFlags(
-                  autoPlay: false,
-                  mute: false,
-                  controlsVisibleAtStart: true,
-                )),
+              initialVideoId: movieVideo.data.url,
+              flags: YoutubePlayerFlags(
+                // hideControls: true,
+                hideThumbnail: true,
+                controlsVisibleAtStart: true,
+                autoPlay: false,
+                mute: false,
+                forceHD: false,
+              ),
+            ),
             showVideoProgressIndicator: true,
             progressIndicatorColor: Colors.red,
             progressColors: ProgressBarColors(
               playedColor: Colors.red,
               handleColor: Colors.redAccent,
             ),
-            onReady: () {
-              print('player ready');
-              // _controller.addListener(listener);
-            },
+            onReady: () => {print('Youtube Ready')},
+          ) : Container(
+            alignment: Alignment.center,
+            child: CircularProgressIndicator(),
           );
         }),
-      ),
     );
   }
 

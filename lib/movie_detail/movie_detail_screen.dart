@@ -2,9 +2,11 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:moviedb/core/models/movie.dart';
 import 'package:moviedb/movie_detail/widgets/movie_cast.dart';
 import 'package:moviedb/movie_detail/widgets/movie_detail.dart';
+import 'package:moviedb/movie_detail/widgets/movie_detail_view_model.dart';
 import 'package:moviedb/movie_detail/widgets/movie_synopsis.dart';
 import 'package:moviedb/movie_detail/widgets/video_player.dart';
 
@@ -26,12 +28,16 @@ class MovieDetailScreen extends StatelessWidget {
               ),
             ),
             actions: [
-              IconButton(
-                icon: new Icon(Icons.favorite),
-                onPressed: () => print('yeah'),
-                iconSize: 30,
-                color: Colors.white,
-              )
+              Consumer(builder: (context, watch, widget) {
+                final state = watch(movieDetailViewModelProvider);
+
+                return IconButton(
+                  icon: new Icon(Icons.favorite),
+                  onPressed: () => context.read(movieDetailViewModelProvider.notifier).setFavorite(data.id),
+                  iconSize: 30,
+                  color: state.data.favorite ? Colors.pink : Colors.white,
+                );
+              })
             ]),
         body: SingleChildScrollView(
           dragStartBehavior: DragStartBehavior.start,
