@@ -44,6 +44,18 @@ class FavoriteScreen extends StatelessWidget{
                             image: NetworkImage('https://m.media-amazon.com/images/M/MV5BYjcyYTk0N2YtMzc4ZC00Y2E0LWFkNDgtNjE1MzZmMGE1YjY1XkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_FMjpg_UX1000_.jpg'),
                           ),
                         ),
+                        Positioned.fill(
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [Colors.transparent, Colors.black.withOpacity(0.95)],
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                stops: [0.6, 0.85],
+                              ),
+                            ),
+                          ),
+                        ),
                         Positioned(
                             top: 10,
                             left: 10,
@@ -66,10 +78,50 @@ class FavoriteScreen extends StatelessWidget{
                         Positioned(
                             bottom: 10,
                             left: 10,
-                            child: Container(
-                              height: 10,
-                              width: 10,
-                            ),
+                            child: Column(
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(bottom: 2),
+                                  height: 20,
+                                  child: AutoSizeText(
+                                      'ddsd',
+                                      style: TextStyle(
+                                          color: Color(0xffDEDDDF)),
+                                    ),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(bottom: 2),
+                                  height: 20,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        margin: EdgeInsets.only(right: 5),
+                                        child: IconButton(
+                                          icon: new Icon(Icons.star),
+                                          onPressed: () => print('yeah'),
+                                          iconSize: 20,
+                                          color: Colors.orangeAccent,
+                                          padding: EdgeInsets.all(0),
+                                          constraints:
+                                          BoxConstraints.tight(
+                                              Size.square(20)),
+                                        ),
+                                      ),
+                                      AutoSizeText(
+                                          'DD',
+                                          style: TextStyle(
+                                              fontSize: 9,
+                                              color: Colors.grey),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            )
                         )
                       ],
                     ),
