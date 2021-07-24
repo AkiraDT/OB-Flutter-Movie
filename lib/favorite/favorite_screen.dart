@@ -1,8 +1,8 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:moviedb/core/models/async_state.dart';
+import 'package:moviedb/core/providers/firebase_analytics_provider.dart';
 import 'package:moviedb/favorite/favourite_view_model.dart';
 import 'package:moviedb/favorite/widgets/favourite_movie_card.dart';
 
@@ -13,15 +13,13 @@ class FavoriteScreen extends StatelessWidget{
       context.read(favouriteMovieViewModelProvider.notifier).loadData();
     });
 
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
+      await context.read(analyticsProvider).logEvent(name: 'Movie_screen');
+    });
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0XFF191926),
-        leading: GestureDetector(
-          onTap: () => {Navigator.pop(context)},
-          child: Icon(
-            Icons.arrow_back_ios,
-          ),
-        ),
         title: Text('Favourite Movie'),
         centerTitle: true,
       ),

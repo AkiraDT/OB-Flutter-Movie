@@ -1,4 +1,4 @@
-import 'package:flutter_riverpod/all.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:moviedb/core/models/async_state.dart';
 import 'package:moviedb/core/models/movie_favourite.dart';
 import 'package:moviedb/core/services/movie_service.dart';

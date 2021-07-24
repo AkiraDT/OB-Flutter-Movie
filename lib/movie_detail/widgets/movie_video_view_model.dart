@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:moviedb/core/models/async_state.dart';
-import 'package:moviedb/core/models/movie_video.dart';
 import 'package:moviedb/core/services/movie_service.dart';
 
 final movieVideosViewModelProvider =

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "518590240552",
+    "project_id": "ob-flutter",
+    "storage_bucket": "ob-flutter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:518590240552:android:7cc321d225852da291e21d",
+        "android_client_info": {
+          "package_name": "com.drakemd.moviedb"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "518590240552-bgn8d3ct1ir2rhquahq2erq03tss1f89.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.drakemd.moviedb",
+            "certificate_hash": "c64cc213285a636470b7a549fa6e6b61710898d9"
+          }
+        },
+        {
+          "client_id": "518590240552-tqt6uqt9e86gda35re17g8770ka6dcje.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDdf-A8_CSOQwpYyWu-NMZFIuvUQBNM0c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "518590240552-tqt6uqt9e86gda35re17g8770ka6dcje.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

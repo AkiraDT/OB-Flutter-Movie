@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:moviedb/core/models/movie.dart';
+import 'package:moviedb/core/providers/firebase_analytics_provider.dart';
 import 'package:moviedb/movie_detail/widgets/movie_cast.dart';
 import 'package:moviedb/movie_detail/widgets/movie_detail.dart';
 import 'package:moviedb/movie_detail/widgets/movie_detail_view_model.dart';
@@ -14,6 +15,10 @@ class MovieDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Movie data = ModalRoute.of(context)!.settings.arguments as Movie;
+
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
+      await context.read(analyticsProvider).logEvent(name: 'Movie_Detail_screen');
+    });
 
     return Scaffold(
         backgroundColor: Color(0XFF191926),
