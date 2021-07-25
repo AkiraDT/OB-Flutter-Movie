@@ -4,9 +4,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:moviedb/core/models/async_state.dart';
 import 'package:moviedb/movie/widgets/popular/popular_movies_view_model.dart';
-import 'package:moviedb/movie_detail/widgets/movie_cast_view_model.dart';
-import 'package:moviedb/movie_detail/widgets/movie_detail_view_model.dart';
-import 'package:moviedb/movie_detail/widgets/movie_video_view_model.dart';
 
 class PopularMovies extends StatelessWidget {
   @override
@@ -37,15 +34,18 @@ class PopularMovies extends StatelessWidget {
                     itemCount: state.data.length,
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
-                      return InkWell(
-                        onTap: () {
-                          Navigator.pushNamed(context, '/movieDetail',
-                              arguments: state.data[index]);
-                        },
-                        child: Container(
-                          margin: EdgeInsets.only(top: 5, left: 10),
-                          child: Image.network(state.data[index].poster,
-                              height: 300, width: 150),
+                      return Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.pushNamed(context, '/movieDetail',
+                                arguments: state.data[index]);
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(top: 5, left: 10),
+                            child: Image.network(state.data[index].poster,
+                                height: 300, width: 150),
+                          ),
                         ),
                       );
                     }),
