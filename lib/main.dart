@@ -23,6 +23,7 @@ class MyAppState extends State {
 
   Future<void> setupInterectedMessage (BuildContext context) async {
     await FirebaseMessaging.instance.getToken();
+    await FirebaseMessaging.instance.subscribeToTopic('all');
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       print(message.data);
       if (message.data['path'] != null && message.data['argument'] != null) {

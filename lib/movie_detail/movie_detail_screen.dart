@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -14,7 +16,15 @@ import 'package:moviedb/movie_detail/widgets/video_player.dart';
 class MovieDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final Movie data = ModalRoute.of(context)!.settings.arguments as Movie;
+    var param = ModalRoute.of(context)!.settings.arguments;
+    Movie data;
+    if (param is String) {
+      Map<String, dynamic> valueMap = jsonDecode(param);
+      data = Movie.fromJson(valueMap);
+    } else {
+       data = param as Movie;
+    }
+
 
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
       await context.read(analyticsProvider).logEvent(name: 'Movie_Detail_screen');
